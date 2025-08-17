@@ -39,12 +39,66 @@
       <button id="actionBtn">Click Me</button>
       <pre id="output">Waiting for action...</pre>
     </section>
+    <section>
+      <h2>Send a Test Email (Mailgun)</h2>
+      <form id="mailgunForm">
+        <label>
+          To Email:
+          <input type="email" id="toEmail" required>
+        </label>
+        <br>
+        <label>
+          Subject:
+          <input type="text" id="subject" required>
+        </label>
+        <br>
+        <label>
+          Message:
+          <textarea id="message" required></textarea>
+        </label>
+        <br>
+        <button type="submit" id="sendBtn">Send Test Email</button>
+        <span id="status"></span>
+      </form>
+    </section>
   </main>
 
   <script>
     // basic JS — no APIs yet
     document.getElementById("actionBtn").addEventListener("click", () => {
       document.getElementById("output").textContent = "You clicked the button!";
+    });
+
+    // Mailgun form JS
+    const mailgunForm = document.getElementById('mailgunForm');
+    const sendBtn = document.getElementById('sendBtn');
+    const statusSpan = document.getElementById('status');
+    mailgunForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      sendBtn.disabled = true;
+      statusSpan.textContent = "Sending...";
+      try {
+        const res = await fetch("http://localhost:3000/api/send-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            to: document.getElementById("toEmail").value,
+            subject: document.getElementById("subject").value,
+            html: document.getElementById("message").value
+          })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          statusSpan.textContent = data.message || "Email sent!";
+        } else {
+          const err = await res.json();
+          statusSpan.textContent = "Error: " + (err.error || "Unknown error");
+        }
+      } catch (error) {
+        statusSpan.textContent = "Network error: " + error.message;
+      } finally {
+        sendBtn.disabled = false;
+      }
     });
   </script>
 </body>
