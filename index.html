@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Playground</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+    }
+    header {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 1rem;
+    }
+    section {
+      margin: 2rem 0;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      margin-top: 1rem;
+    }
+    pre {
+      background: #f6f6f6;
+      padding: 1rem;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>My 1-Page Web App</h1>
+    <p>A sandbox to try APIs & analytics</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>API Playground</h2>
+      <button id="actionBtn">Click Me</button>
+      <pre id="output">Waiting for action...</pre>
+    </section>
+  </main>
+
+  <script>
+    // basic JS — no APIs yet
+    document.getElementById("actionBtn").addEventListener("click", () => {
+      document.getElementById("output").textContent = "You clicked the button!";
+    });
+  </script>
+</body>
+</html>
