@@ -9,6 +9,8 @@ const mailgun = new Mailgun(formData);
 const mailgunClient = mailgun.client({
   username: 'api',
   key: process.env.MAILGUN_API_KEY,
+  // If your Mailgun domain is in the EU region, uncomment the next line:
+  // url: 'https://api.eu.mailgun.net',
 });
 
 // 2. Create an Express app
@@ -34,18 +36,23 @@ app.post('/api/send-email', async (req, res) => {
       return res.status(500).json({ error: "Server missing MAILGUN_DOMAIN (set it in .env)." });
     }
 
-    // uses the client you created earlier: `const mailgunClient = mailgun.client({...})`
-    const response = await mailgunClient.messages.create(process.env.MAILGUN_DOMAIN, {
-      from: `Playground <mailgun@${process.env.MAILGUN_DOMAIN}>`,
+    const domain = process.env.MAILGUN_DOMAIN;
+    const from = `Playground <mail@mailgun.chriscalabro.com>`; // hard-coded as requested
+
+    // small log so you can verify what's used each send
+    console.log('[send-email]', { domain, from, to, subject });
+
+    const response = await mailgunClient.messages.create(domain, {
+      from,
       to,
       subject,
-      html
+      html,
     });
 
     return res.status(200).json({ ok: true, id: response.id, message: response.message });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: err.message || "Failed to send" });
+    return res.status(500).json({ error: err.message || 'Failed to send' });
   }
 });
 
