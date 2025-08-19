@@ -19,10 +19,11 @@ const app = express();
 // 3. Middleware setup
 app.use(cors());            // allow cross-origin requests
 app.use(express.json());    // parse JSON bodies automatically
+app.use(express.static('.'));  // serve static files from current directory
 
 // 4. Define a test route
 app.get('/', (req, res) => {
-  res.send('Hello World from Express!');
+  res.sendFile(__dirname + '/index.html');
 });
 
 // Send email (Mailgun)
