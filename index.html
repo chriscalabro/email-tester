@@ -2,81 +2,175 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>My Playground</title>
+  <title>Email Tester</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
       padding: 2rem;
+      background-color: #f8f9fa;
+      color: #333;
     }
+    
     header {
-      margin-bottom: 2rem;
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 1rem;
+      text-align: center;
+      margin-bottom: 3rem;
+      padding: 2rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
-    section {
-      margin: 2rem 0;
+    
+    h1 {
+      margin: 0;
+      color: #2c3e50;
+      font-size: 2rem;
     }
-    button {
-      padding: 0.5rem 1rem;
+    
+    .subtitle {
+      color: #7f8c8d;
+      margin-top: 0.5rem;
+      font-size: 1.1rem;
+    }
+    
+    .email-form {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+    
+    input[type="email"],
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+      box-sizing: border-box;
+    }
+    
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #3498db;
+    }
+    
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    .send-button {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+    
+    .send-button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+    }
+    
+    .send-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .status {
       margin-top: 1rem;
-    }
-    pre {
-      background: #f6f6f6;
       padding: 1rem;
-      border-radius: 4px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 500;
+      display: none;
+    }
+    
+    .status.success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      display: block;
+    }
+    
+    .status.error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      display: block;
+    }
+    
+    .status.sending {
+      background-color: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+      display: block;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>My 1-Page Web App</h1>
-    <p>A sandbox to try APIs & analytics</p>
+    <h1>📧 Email Tester</h1>
+    <p class="subtitle">Send test emails using Mailgun</p>
   </header>
 
   <main>
-    <section>
-      <h2>API Playground</h2>
-      <button id="actionBtn">Click Me</button>
-      <pre id="output">Waiting for action...</pre>
-    </section>
-    <section>
-      <h2>Send a Test Email (Mailgun)</h2>
+    <div class="email-form">
       <form id="mailgunForm">
-        <label>
-          To Email:
-          <input type="email" id="toEmail" required>
-        </label>
-        <br>
-        <label>
-          Subject:
-          <input type="text" id="subject" required>
-        </label>
-        <br>
-        <label>
-          Message:
-          <textarea id="message" required></textarea>
-        </label>
-        <br>
-        <button type="submit" id="sendBtn">Send Test Email</button>
-        <span id="status"></span>
+        <div class="form-group">
+          <label for="toEmail">To Email:</label>
+          <input type="email" id="toEmail" required placeholder="recipient@example.com">
+        </div>
+        
+        <div class="form-group">
+          <label for="subject">Subject:</label>
+          <input type="text" id="subject" required placeholder="Test Email Subject">
+        </div>
+        
+        <div class="form-group">
+          <label for="message">Message:</label>
+          <textarea id="message" required placeholder="Your test message here..."></textarea>
+        </div>
+        
+        <button type="submit" id="sendBtn" class="send-button">Send Test Email</button>
+        <div id="status" class="status"></div>
       </form>
-    </section>
+    </div>
   </main>
 
   <script>
-    // basic JS — no APIs yet
-    document.getElementById("actionBtn").addEventListener("click", () => {
-      document.getElementById("output").textContent = "You clicked the button!";
-    });
-
-    // Mailgun form JS
     const mailgunForm = document.getElementById('mailgunForm');
     const sendBtn = document.getElementById('sendBtn');
-    const statusSpan = document.getElementById('status');
+    const statusDiv = document.getElementById('status');
+    
     mailgunForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       sendBtn.disabled = true;
-      statusSpan.textContent = "Sending...";
+      statusDiv.className = 'status sending';
+      statusDiv.textContent = "Sending email...";
+      
       try {
         const res = await fetch("http://localhost:3000/api/send-email", {
           method: "POST",
@@ -87,15 +181,20 @@
             html: document.getElementById("message").value
           })
         });
+        
         if (res.ok) {
           const data = await res.json();
-          statusSpan.textContent = data.message || "Email sent!";
+          statusDiv.className = 'status success';
+          statusDiv.textContent = "✅ " + (data.message || "Email sent successfully!");
+          mailgunForm.reset();
         } else {
           const err = await res.json();
-          statusSpan.textContent = "Error: " + (err.error || "Unknown error");
+          statusDiv.className = 'status error';
+          statusDiv.textContent = "❌ Error: " + (err.error || "Unknown error");
         }
       } catch (error) {
-        statusSpan.textContent = "Network error: " + error.message;
+        statusDiv.className = 'status error';
+        statusDiv.textContent = "❌ Network error: " + error.message;
       } finally {
         sendBtn.disabled = false;
       }
