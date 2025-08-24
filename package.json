@@ -1,21 +1,22 @@
 {
-  "name": "playground",
+  "name": "email-tester",
   "version": "1.0.0",
   "description": "",
-  "homepage": "https://github.com/chriscalabro/playground#readme",
+  "homepage": "https://github.com/chriscalabro/email-tester#readme",
   "bugs": {
-    "url": "https://github.com/chriscalabro/playground/issues"
+    "url": "https://github.com/chriscalabro/email-tester/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/chriscalabro/playground.git"
+    "url": "git+https://github.com/chriscalabro/email-tester.git"
   },
   "license": "ISC",
   "author": "",
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
