@@ -57,8 +57,5 @@ app.post('/api/send-email', async (req, res) => {
   }
 });
 
-// 5. Start the server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`✅ Server running at http://localhost:${PORT}`);
-});
+// 5. Export the app for Vercel
+module.exports = app;
